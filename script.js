@@ -262,7 +262,16 @@ class MathSolver {
     solve() { throw new Error('Method not implemented'); }
 }
 
-class BasicOperationSolver extends MathSolver {
+class FreeMathSolver extends MathSolver{
+    solve()
+    {}
+}
+class PremiumMathSolver extends MathSolver{
+    solve()
+    {}
+}
+
+class BasicOperationSolver extends FreeMathSolver {
     solve(data) {
         const num1 = parseFloat(data.num1);
         const num2 = parseFloat(data.num2);
@@ -280,7 +289,7 @@ class BasicOperationSolver extends MathSolver {
     }
 }
 
-class LinearEquationSolver extends MathSolver {
+class LinearEquationSolver extends FreeMathSolver {
     solve(data) {
         const a = parseFloat(data['linear-a']);
         const b = parseFloat(data['linear-b']);
@@ -289,7 +298,7 @@ class LinearEquationSolver extends MathSolver {
     }
 }
 
-class QuadraticEquationSolver extends MathSolver {
+class QuadraticEquationSolver extends FreeMathSolver {
     solve(data) {
         const a = parseFloat(data['quad-a']);
         const b = parseFloat(data['quad-b']);
@@ -314,7 +323,7 @@ class QuadraticEquationSolver extends MathSolver {
     }
 }
 
-class DerivativeSolver extends MathSolver {
+class DerivativeSolver extends PremiumMathSolver {
     constructor(order, paymentService) {
         super();
         this.order = order;
@@ -371,7 +380,19 @@ class DerivativeSolver extends MathSolver {
 
 class PaymentService {
     constructor() {
+        if (PaymentService.instance) {
+            return PaymentService.instance;
+        }
+        
         this._credits = parseInt(localStorage.getItem('user_credits')) || 10;
+        PaymentService.instance = this;
+    }
+
+    static getInstance() {
+        if (!PaymentService.instance) {
+            PaymentService.instance = new PaymentService();
+        }
+        return PaymentService.instance;
     }
 
     get credits() {
